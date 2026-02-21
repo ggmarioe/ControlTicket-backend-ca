@@ -1,0 +1,75 @@
+## .NET / C# ##
+bin/
+obj/
+out/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Visual Studio
+.vs/
+*.rsuser
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+bld/
+
+## NuGet
+**/packages/*
+*.nupkg
+**/[Pp]ackages/build/
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## MSBuild
+*.log
+msbuild.binlog
+msbuild.wrn
+msbuild.err
+
+## JetBrains Rider
+.idea/
+*.sln.iml
+
+## VS Code
+.vscode/
+
+## Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+## macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+## Secrets / environment
+appsettings.Development.json
+*.pfx
+*.key
+
+## EF Core Migrations (keep tracked, but ignore designer snapshots' build output)
+# Migrations/ — typically you DO want these committed
+
+## Publish output
+publish/
+
+
+# settings
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json
+
