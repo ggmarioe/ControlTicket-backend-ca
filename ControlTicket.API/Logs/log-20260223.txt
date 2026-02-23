@@ -1,0 +1,8 @@
+2026-02-23 01:25:26.252 -03:00 [INF] Now listening on: http://localhost:5070
+2026-02-23 01:25:26.309 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-02-23 01:25:26.311 -03:00 [INF] Hosting environment: Development
+2026-02-23 01:25:26.313 -03:00 [INF] Content root path: D:\Proyectos\CIL\backend-ca\ControlTicket.API
+2026-02-23 01:25:39.433 -03:00 [WRN] Failed to determine the https port for redirect.
+2026-02-23 01:25:39.576 -03:00 [INF] HTTP GET /WeatherForecast responded 200 in 144.1730 ms
+2026-02-23 01:25:39.615 -03:00 [INF] HTTP GET /favicon.ico responded 404 in 0.1619 ms
+2026-02-23 01:25:45.639 -03:00 [INF] Application is shutting down...
