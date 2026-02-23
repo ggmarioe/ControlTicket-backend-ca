@@ -1,28 +1,55 @@
 using ControlTicket.Application;
 using ControlTicket.Infrastructure;
+using ControlTicket.Infrastructure.Logging;
+using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
+// Bootstrap logger — captures logs during startup before full config is ready
+SerilogConfiguration.CreateBootstrapLogger();
 
-// Add services to the container.
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration);
-
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+try
 {
-    app.MapOpenApi();
+    var builder = WebApplication.CreateBuilder(args);
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    var jwtIssuer = builder.Configuration.GetSection("Jwt:Issuer").Get<string>();
+    var jwtAudience = builder.Configuration.GetSection("Jwt:Audicence").Get<string>() ?? "";
+    var jwtKey = builder.Configuration.GetSection("Jwt:Key").Get<string>();
+    //var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+    // Configure Serilog from appsettings.json
+    builder.Host.AddSerilog();
+
+    // Add services to the container.
+    builder.Services.AddApplication();
+    builder.Services.AddInfrastructure(builder.Configuration);
+
+    builder.Services.AddControllers();
+    // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+    builder.Services.AddOpenApi();
+
+   var app = builder.Build();
+
+    // Structured HTTP request logging
+    app.UseSerilogRequestLogging();
+
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        app.MapOpenApi();
+    }
+
+    app.UseHttpsRedirection();
+
+    app.UseAuthorization();
+
+    app.MapControllers();
+
+    app.Run();
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
