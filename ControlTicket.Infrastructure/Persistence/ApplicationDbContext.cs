@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using ControlTicket.Domain.Entities;
+using ControlTicket.Domain.Employees;
 
 namespace ControlTicket.Infrastructure.Persistence
 {
@@ -8,6 +8,7 @@ namespace ControlTicket.Infrastructure.Persistence
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+            this.ChangeTracker.LazyLoadingEnabled = false;
         }
 
         public DbSet<Employee> Employees { get; set; }
@@ -15,6 +16,12 @@ namespace ControlTicket.Infrastructure.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+              modelBuilder.Entity<Employee>()
+                .ToTable("workers")
+                .HasKey(w => w.Rut); 
+
+            
         }
     }
 }

@@ -1,3 +1,6 @@
+using ControlTicket.Domain.Common;
+using ControlTicket.Domain.Employees;
+using ControlTicket.Infrastructure.Persistence.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,9 +14,10 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        // Register infrastructure services here as the project grows.
-        // Examples: DbContext, repository implementations, external API clients, etc.
+        // Register repository implementations
+        services.AddScoped<IRepository<Employee, string>, EmployeeRepository>();
 
         return services;
     }
 }
+    

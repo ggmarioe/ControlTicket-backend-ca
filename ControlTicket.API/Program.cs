@@ -5,13 +5,14 @@ using ControlTicket.Infrastructure.Persistence;
 using Serilog;
 using Pomelo.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using ControlTicket.Application.Features.Employees.Queries;
 // Bootstrap logger — captures logs during startup before full config is ready
 SerilogConfiguration.CreateBootstrapLogger();
 
 try
 {
     var builder = WebApplication.CreateBuilder(args);
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    var connectionString = builder.Configuration.GetConnectionString("MariaDBConnection");
     var jwtIssuer = builder.Configuration.GetSection("Jwt:Issuer").Get<string>();
     var jwtAudience = builder.Configuration.GetSection("Jwt:Audicence").Get<string>() ?? "";
     var jwtKey = builder.Configuration.GetSection("Jwt:Key").Get<string>(); 
@@ -24,15 +25,15 @@ try
     // Add services to the container.
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
-
     builder.Services.AddControllers();
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddOpenApi();
 
+    
+
     builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseMySql(connectionString, serverVersion)
                                                                         .LogTo(Console.WriteLine, LogLevel.Warning));
-
-
+                                                                    
    var app = builder.Build();
 
     // Structured HTTP request logging

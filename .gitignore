@@ -73,3 +73,8 @@ appsettings.json
 appsettings.Development.json
 appsettings.Production.json
 
+# archivo*s txt 
+*.txt
+
+# Archivos log  
+*.log
