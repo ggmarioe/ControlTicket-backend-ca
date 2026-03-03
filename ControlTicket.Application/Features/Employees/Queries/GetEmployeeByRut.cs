@@ -41,6 +41,9 @@ public sealed class GetEmployeeByRutQueryHandler(IRepository<Employee, string> e
             employee.FirstName,
             employee.LastName,
             employee.WorkPlaceId,
-            employee.Size));
+            employee.Size,
+            employee.PictureUrl,
+            employee.IsDeleted,
+            employee.TicketId));
     }
 }

@@ -21,21 +21,17 @@ try
 
     // Configure Serilog from appsettings.json
     builder.Host.AddSerilog();
-
     // Add services to the container.
-    builder.Services.AddApplication();
+    builder.Services.AddApplication(typeof(GetEmployeeListQueryHandler).Assembly);
     builder.Services.AddInfrastructure(builder.Configuration);
     builder.Services.AddControllers();
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddOpenApi();
 
-    
-
     builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseMySql(connectionString, serverVersion)
                                                                         .LogTo(Console.WriteLine, LogLevel.Warning));
                                                                     
    var app = builder.Build();
-
     // Structured HTTP request logging
     app.UseSerilogRequestLogging();
 

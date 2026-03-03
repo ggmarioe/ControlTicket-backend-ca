@@ -1,45 +1,60 @@
 using ControlTicket.Domain.Employees;
 using ControlTicket.SharedKernel.Results;
+using ControlTicket.Domain.Common;
+using ControlTicket.Application.Features.Employees.Dtos;
+using ControlTicket.Application.Common.Messaging;
+using ControlTicket.Application.Features.Employees.Commands;
 
-namespace ControlTicket.Application.Features.Employees.Commands;
+namespace ControlTicket.Repository.Employees;
 
 public static class CreateEmployeeErrors
 {
     public static Error RutAlreadyUsed(string rut)
-        => new("APP.CreateEmployee.RutAlreadyUsed", $"Rut '{rut}' is already used.", ErrorType.Conflict);   
+        => new("Application.CreateEmployee.RutAlreadyUsed", $"Rut '{rut}' is already used.", ErrorType.Conflict);
 }
 
-public sealed class CreateEmployeeHandler
+public sealed class CreateEmployeeCommandHandler : IRequestHandler<CreateEmployeeCommand, Result<string>>
 {
-    private readonly IEmployeeRepository _repo;
+    private readonly IRepository<Employee, string> _employeeRepository;
 
-    public CreateEmployeeHandler(IEmployeeRepository repo)
+    public CreateEmployeeCommandHandler(IRepository<Employee, string> employeeRepository)
     {
-        _repo = repo;
+        _employeeRepository = employeeRepository;
     }
 
-    public async Task<Result<string>> Handle(CreateEmployeeCommand cmd, CancellationToken ct)
+    public Task<Result<string>> Handle(CreateEmployeeCommand request, CancellationToken ct)
+    {
+        var dto = new CreateEmployeeDto(
+            request.Rut,
+            request.FirstName,
+            request.LastName,
+            request.WorkPlaceId,
+            request.Size,
+            request.PictureUrl);
+
+        return Handle(dto, ct);
+    }
+
+    private async Task<Result<string>> Handle(CreateEmployeeDto cmd, CancellationToken ct)
     {
         // 1) Dominio valida invariantes
-        var created = Employee.Create(
-            cmd.Rut, 
-            cmd.FirstName, 
+        var employee = Employee.Create(
+            cmd.Rut,
+            cmd.FirstName,
             cmd.LastName,
             cmd.WorkPlaceId,
-            cmd.Size);
-        if (created.IsFailure)
-            return Result<string>.Failure(created.Errors);
+            cmd.Size,
+            cmd.PictureUrl);
 
-        var employee = created.Value!;
+        if (employee.IsFailure)
+            return Result<string>.Failure(employee.Errors);
 
-        // 2) Regla de aplicación (caso de uso)
-        if (await _repo.RutExistsAsync(employee.Rut, ct))
-            return Result<string>.Failure(CreateEmployeeErrors.RutAlreadyUsed(employee.Rut));
+        var employeeEntity = employee.Value!;
 
-        // 3) Persistencia
-        await _repo.AddAsync(employee, ct);
+        // 2) Persistencia
+        await _employeeRepository.AddAsync(employeeEntity, ct);
 
-        // 4) Retorno OK
-        return Result<string>.Success(employee.Rut);
+        // 3) Retorno OK
+        return Result<string>.Success(employeeEntity.Rut);
     }
 }

@@ -5,6 +5,8 @@ using ControlTicket.API.Common;
 using ControlTicket.SharedKernel.Results;
 using ControlTicket.Application.Features.Employees.Dtos;
 using ControlTicket.Application.Features.Employees.Queries;
+using ControlTicket.Application.Common.Messaging;
+
 
 namespace ControlTicket.API.Contollers;
 
@@ -13,23 +15,22 @@ namespace ControlTicket.API.Contollers;
 public class EmployeesController : ControllerBase
 {
     private readonly IGetEmployeeByRutQueryHandler _getEmployeeByRutQueryHandler;
-    private readonly IGetEmployeeListQueryHandler _getEmployeeListQueryHandler;
+    private readonly IMediator _mediator;
 
     public EmployeesController(
         IGetEmployeeByRutQueryHandler getEmployeeByRutQueryHandler,
-        IGetEmployeeListQueryHandler getEmployeeListQueryHandler)
+        IMediator mediator)
     {
         
         _getEmployeeByRutQueryHandler = getEmployeeByRutQueryHandler;
-        _getEmployeeListQueryHandler = getEmployeeListQueryHandler;
+        _mediator = mediator;
     }
 
    
     [HttpGet]
     public async Task<Result<IReadOnlyList<EmployeeListItemDto>>> GetAllEmployeeeList()
     {
-        var query = await _getEmployeeListQueryHandler.Handle(new GetEmployeeListQuery());
-        return query;
+        return await _mediator.Send(new GetEmployeeListQuery(), CancellationToken.None);
     }
 
     [HttpGet("{rut}")]
@@ -37,6 +38,19 @@ public class EmployeesController : ControllerBase
     {
         var query = await _getEmployeeByRutQueryHandler.Handle(new GetEmployeeByRutQuery(rut));
         return query;
+    }
+
+    [HttpPost]
+    public async Task<Result<string>> CreateEmployee([FromBody] CreateEmployeeCommand request)
+    {
+        var command =  new CreateEmployeeCommand(
+            request.Rut,
+            request.FirstName,
+            request.LastName,
+            request.WorkPlaceId,
+            request.Size,
+            request.PictureUrl);
+        return await _mediator.Send(command, CancellationToken.None);
     }
 
 }

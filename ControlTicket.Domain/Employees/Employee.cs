@@ -10,12 +10,17 @@ public class Employee
     public string LastName { get; set; } = string.Empty;
     public int WorkPlaceId { get; set; } = 0;
     public string Size { get; set; } = string.Empty;
+
+    public string PictureUrl { get; set; } = string.Empty;
+    public bool IsDeleted { get; set; } = false;
+    public long? TicketId { get; set; } = null;
      public static Result<Employee> Create(
         string rut, 
         string firstName , 
         string lastName,
         int workPlaceId,
-        string size)
+        string size,
+        string pictureUrl)
     {
         var errors = new List<Error>();
 
@@ -31,7 +36,10 @@ public class Employee
             FirstName = firstName.Trim(), 
             LastName = lastName.Trim(),
             WorkPlaceId = workPlaceId,
-            Size = size.Trim()
+            Size = size.Trim(),
+            PictureUrl = (pictureUrl ?? string.Empty).Trim(),
+            IsDeleted = false,
+            TicketId = null
         };
 
         return Result<Employee>.Success(employee);
