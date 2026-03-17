@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ControlTicket.SharedKernel\ControlTicket.SharedKernel.csproj" />
     <ProjectReference Include="..\ControlTicket.Application\ControlTicket.Application.csproj" />
     <ProjectReference Include="..\ControlTicket.Infrastructure\ControlTicket.Infrastructure.csproj" />
   </ItemGroup>

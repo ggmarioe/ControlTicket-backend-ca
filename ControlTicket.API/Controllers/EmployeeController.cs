@@ -1,16 +1,21 @@
+using ControlTicket.API.Base;
+using ControlTicket.SharedKernel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ControlTicket.API.Contollers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class EmployeeController : ControllerBase
+public class EmployeeController : BaseApiClient
 {
-   
+    
     [HttpGet]
-    public async Task<List<string>> Get()
+    public async Task<Result<string[]>> Get()
     {
-       
-        return ["a","b","c"];
+        return await ExecuteAsync(async () =>
+        {
+            var employees = new[] { "a", "b", "c" };
+            return Result<string[]>.Success(employees);
+        });
     }
 }
