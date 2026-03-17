@@ -1,9 +1,12 @@
+using System.Text.Json.Serialization;
+
 namespace ControlTicket.SharedKernel;
 
 /// <summary>
 /// Represents a typed error with a code, description, and error type.
 /// Used as the error channel in the Result pattern.
 /// </summary>
+[JsonConverter(typeof(ErrorJsonConverter))]
 public sealed record Error(string Code, string Description, ErrorType Type = ErrorType.Failure)
 {
     /// <summary>Sentinel value representing "no error".</summary>
